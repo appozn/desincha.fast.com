@@ -1,19 +1,685 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DESINCHA FAST Landing Page</title>
-    <meta name="description" content="Uma rotina simples, feita em casa, que já ajudou milhares de pessoas a se sentirem melhor com o próprio corpo." />
-    <meta property="og:title" content="DESINCHA FAST" />
-    <meta property="og:description" content="Pare de se sentir inchado(a) todos os dias. Método simples e eficaz." />
-    <meta property="og:image" content="https://bolt.new/static/og_default.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://bolt.new/static/og_default.png" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>DESINCHA FAST — Pare de se sentir inchado(a)</title>
+  <!-- SEO friendly -->
+  <meta name="description" content="Rotina simples de até 15min em casa que já ajudou milhares a se sentirem melhor com o corpo. Acesso imediato.">
+  <!-- Estilo leve e moderno, fonte Inter (Google Fonts) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <!-- Ícones profissionais via Feather Icons (SVG puro, leve) -->
+  <script src="https://unpkg.com/feather-icons"></script>
+  <style>
+    /* RESET E VARIÁVEIS */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    :root {
+      --verde-escuro: #0B3B2F;
+      --verde-principal: #1F7A5C;
+      --verde-claro: #C8F0E4;
+      --verde-glow: #2D9F7A;
+      --bg-claro: #F9FFFD;
+      --texto: #1A2E2A;
+      --cinza-card: #F2F9F5;
+      --sombra-suave: 0 12px 30px rgba(0, 60, 30, 0.08);
+      --glow-padrao: 0 0 0 2px rgba(45, 159, 122, 0.3), 0 4px 12px rgba(31, 122, 92, 0.2);
+      --border-radius-card: 28px;
+      --font-corpo: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    body {
+      font-family: var(--font-corpo);
+      background-color: var(--bg-claro);
+      color: var(--texto);
+      line-height: 1.4;
+      overflow-x: hidden;
+    }
+    h1, h2, h3 {
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    /* containers */
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 0.25rem;
+    }
+    /* navbar fixa */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(31, 122, 92, 0.15);
+      z-index: 1000;
+      padding: 0.75rem 0;
+      transition: box-shadow 0.2s;
+    }
+    .navbar .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--verde-escuro);
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #0B3B2F 0%, #1F7A5C 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    /* menu desktop */
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+    .nav-links a {
+      font-weight: 500;
+      font-size: 1rem;
+      color: var(--verde-escuro);
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a:hover {
+      color: var(--verde-principal);
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: var(--verde-principal);
+      transition: width 0.25s ease;
+    }
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+    /* menu mobile simplificado (hambúrguer) */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--verde-escuro);
+      cursor: pointer;
+    }
+    .mobile-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background: white;
+      padding: 1.5rem;
+      box-shadow: 0 20px 30px -10px rgba(0,40,20,0.2);
+      flex-direction: column;
+      gap: 1.25rem;
+      border-top: 1px solid var(--verde-claro);
+      z-index: 999;
+    }
+    .mobile-menu a {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: var(--verde-escuro);
+    }
+
+    /* hero */
+    .hero {
+      padding: 8rem 0 4rem;
+      background: radial-gradient(circle at 80% 30%, rgba(200,240,228,0.4) 0%, transparent 50%);
+    }
+    .hero-content {
+      max-width: 680px;
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 8vw, 3.8rem);
+      line-height: 1.1;
+      color: var(--verde-escuro);
+      margin-bottom: 1.5rem;
+    }
+    .hero p {
+      font-size: 1.3rem;
+      color: #2C4A3F;
+      margin-bottom: 2rem;
+      font-weight: 400;
+    }
+    .btn-principal {
+      display: inline-block;
+      background: linear-gradient(145deg, var(--verde-principal), #16634A);
+      color: white;
+      font-weight: 700;
+      font-size: 1.2rem;
+      padding: 1.2rem 2.8rem;
+      border-radius: 60px;
+      box-shadow: 0 10px 25px -5px rgba(31,122,92,0.5), 0 0 0 2px rgba(200,240,228,0.8);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.5px;
+      text-align: center;
+    }
+    .btn-principal:hover {
+      background: linear-gradient(145deg, #1F8F6B, #1A7456);
+      box-shadow: 0 15px 30px -5px #1F7A5C, 0 0 0 4px var(--verde-claro);
+      transform: scale(1.02);
+    }
+    /* seção dor */
+    .dor {
+      padding: 4rem 0;
+      background-color: #ffffff;
+    }
+    .dor-card {
+      background: var(--cinza-card);
+      border-radius: var(--border-radius-card);
+      padding: 3rem 2.5rem;
+      box-shadow: var(--sombra-suave);
+      border: 1px solid rgba(31,122,92,0.2);
+      max-width: 780px;
+      margin: 0 auto;
+    }
+    .dor-card p {
+      font-size: 2rem;
+      font-weight: 600;
+      line-height: 1.4;
+      color: var(--verde-escuro);
+    }
+    .dor-card p:last-of-type {
+      margin-top: 1.5rem;
+      font-size: 1.6rem;
+      font-weight: 500;
+      color: var(--verde-principal);
+    }
+    /* seção benefícios */
+    .section-title {
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      color: var(--verde-escuro);
+    }
+    .beneficios-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+    }
+    .card {
+      background: white;
+      border-radius: 30px;
+      padding: 2rem 1.5rem;
+      box-shadow: var(--sombra-suave);
+      border: 1px solid rgba(31,122,92,0.1);
+      transition: transform 0.25s, box-shadow 0.25s;
+      text-align: center;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 30px 40px -10px rgba(31,122,92,0.3), 0 0 0 2px var(--verde-claro);
+    }
+    .card i {
+      color: var(--verde-principal);
+      width: 56px;
+      height: 56px;
+      margin-bottom: 1.5rem;
+      stroke-width: 1.5;
+    }
+    .card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .card p {
+      color: #3F5A51;
+    }
+    /* avaliações */
+    .avaliacoes {
+      background: white;
+      padding: 4rem 0;
+    }
+    .avaliacoes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.8rem;
+    }
+    .depoimento-card {
+      background: var(--cinza-card);
+      border-radius: 28px;
+      padding: 2rem 1.8rem;
+      border: 1px solid rgba(31,122,92,0.2);
+    }
+    .estrelas {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 1rem;
+    }
+    .estrelas i {
+      color: #F5B342;
+      fill: #F5B342;
+      width: 22px;
+      height: 22px;
+    }
+    .depoimento-card p {
+      font-size: 1.2rem;
+      font-style: italic;
+      margin-bottom: 1rem;
+      color: #1F3530;
+    }
+    .depoimento-card span {
+      font-weight: 600;
+      color: var(--verde-principal);
+    }
+    /* ofertas (pricing) */
+    .ofertas {
+      padding: 4rem 0;
+      background: linear-gradient(180deg, #ffffff 0%, #F0F9F4 100%);
+    }
+    .ofertas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      align-items: stretch;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .oferta-card {
+      background: white;
+      border-radius: 38px;
+      padding: 2.5rem 2rem;
+      box-shadow: var(--sombra-suave);
+      border: 1px solid rgba(31,122,92,0.15);
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+    .oferta-card.destaque {
+      border: 2px solid var(--verde-principal);
+      box-shadow: 0 20px 35px -5px rgba(31,122,92,0.3), 0 0 0 3px var(--verde-claro);
+      transform: scale(1.02);
+    }
+    .oferta-card h3 {
+      font-size: 2rem;
+      margin-bottom: 1.2rem;
+    }
+    .preco-wrapper {
+      margin: 1rem 0;
+    }
+    .preco-antigo {
+      font-size: 1.4rem;
+      color: #A5B9B0;
+      text-decoration: line-through;
+      margin-right: 0.75rem;
+    }
+    .preco-atual {
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: var(--verde-escuro);
+    }
+    .btn-oferta {
+      background: var(--verde-principal);
+      color: white;
+      font-weight: 700;
+      padding: 1.2rem;
+      border-radius: 60px;
+      margin-top: 1.5rem;
+      text-align: center;
+      transition: 0.2s;
+      border: none;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 12px rgba(31,122,92,0.3);
+    }
+    .btn-oferta:hover {
+      background: #0F5E45;
+      box-shadow: 0 0 0 3px var(--verde-claro), 0 8px 18px rgba(31,122,92,0.5);
+    }
+    /* confiança */
+    .confianca {
+      padding: 3rem 0;
+      background: white;
+    }
+    .confianca-flex {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 3rem;
+      font-size: 1.3rem;
+      font-weight: 500;
+      align-items: center;
+    }
+    .confianca-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--verde-escuro);
+    }
+    .confianca-item i {
+      color: var(--verde-principal);
+      width: 32px;
+      height: 32px;
+    }
+    /* footer */
+    footer {
+      background: var(--verde-escuro);
+      color: #D6EFE2;
+      padding: 2rem 0;
+      text-align: center;
+      font-size: 1rem;
+    }
+    /* animações scroll reveal (base) */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.3, 1), transform 0.6s cubic-bezier(0.2, 0.9, 0.3, 1);
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* responsividade mobile-first */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .mobile-menu-btn {
+        display: block;
+      }
+      .mobile-menu.show {
+        display: flex;
+      }
+      .hero {
+        padding: 6rem 0 3rem;
+      }
+      .dor-card p {
+        font-size: 1.6rem;
+      }
+      .dor-card p:last-of-type {
+        font-size: 1.3rem;
+      }
+      .section-title {
+        font-size: 2rem;
+      }
+      .btn-principal {
+        width: 100%;
+        text-align: center;
+        padding: 1.2rem 1rem;
+      }
+      .ofertas-grid {
+        gap: 1.5rem;
+      }
+      .oferta-card.destaque {
+        transform: scale(1);
+      }
+      .confianca-flex {
+        gap: 1.5rem;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+    @media (max-width: 380px) {
+      .logo {
+        font-size: 1.2rem;
+      }
+      .container {
+        width: 92%;
+      }
+    }
+    /* ícones feather customizados */
+    i {
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar fixa -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <span class="logo">DESINCHA FAST</span>
+      <div class="nav-links">
+        <a href="#beneficios">Benefícios</a>
+        <a href="#avaliacoes">Avaliações</a>
+        <a href="#ofertas">Ofertas</a>
+        <a href="#comprar" data-role="comprar">Comprar</a>
+      </div>
+      <button class="mobile-menu-btn" id="menuToggle" aria-label="Menu">
+        <i data-feather="menu" width="32" height="32"></i>
+      </button>
+    </div>
+    <!-- menu mobile ocultável -->
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#beneficios">Benefícios</a>
+      <a href="#avaliacoes">Avaliações</a>
+      <a href="#ofertas">Ofertas</a>
+      <a href="#comprar" data-role="comprar">Comprar</a>
+    </div>
+  </nav>
+
+  <!-- Hero / primeira dobra -->
+  <section class="hero" id="hero">
+    <div class="container hero-content">
+      <h1 class="reveal">Pare de se sentir inchado(a) todos os dias.</h1>
+      <p class="reveal">Uma rotina simples, feita em casa, que já ajudou milhares de pessoas a se sentirem melhor com o próprio corpo.</p>
+      <a href="#ofertas" class="btn-principal reveal" id="ctaHero">QUERO DESINCHAR AGORA</a>
+    </div>
+  </section>
+
+  <!-- Seção de Dor (agressiva) -->
+  <section class="dor" id="dor">
+    <div class="container">
+      <div class="dor-card reveal">
+        <p>Barriga inchada mesmo comendo pouco.<br>Roupas apertadas.<br>Desconforto quase todos os dias.</p>
+        <p>O problema não é falta de esforço.<br>É não saber o método certo.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefícios -->
+  <section class="container" id="beneficios" style="padding: 4rem 0;">
+    <h2 class="section-title reveal">Benefícios</h2>
+    <div class="beneficios-grid">
+      <div class="card reveal">
+        <i data-feather="clock" width="56" height="56"></i>
+        <h3>Rotina prática</h3>
+        <p>Até 15 minutos por dia, sem complicação</p>
+      </div>
+      <div class="card reveal">
+        <i data-feather="home" width="56" height="56"></i>
+        <h3>Feito em casa</h3>
+        <p>Sem academia, sem equipamentos caros</p>
+      </div>
+      <div class="card reveal">
+        <i data-feather="settings" width="56" height="56"></i>
+        <h3>Ajustes simples</h3>
+        <p>Fáceis de seguir e encaixar na rotina</p>
+      </div>
+      <div class="card reveal">
+        <i data-feather="download-cloud" width="56" height="56"></i>
+        <h3>Acesso imediato</h3>
+        <p>Após o pagamento, comece na mesma hora</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Avaliações -->
+  <section class="avaliacoes" id="avaliacoes">
+    <div class="container">
+      <h2 class="section-title reveal">O que quem já desinchou diz</h2>
+      <div class="avaliacoes-grid">
+        <div class="depoimento-card reveal">
+          <div class="estrelas">
+            <i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i>
+          </div>
+          <p>“Me senti menos inchada já na primeira semana.”</p>
+          <span>— Ana C.</span>
+        </div>
+        <div class="depoimento-card reveal">
+          <div class="estrelas">
+            <i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i>
+          </div>
+          <p>“Simples, fácil e realmente funciona.”</p>
+          <span>— Marcos L.</span>
+        </div>
+        <div class="depoimento-card reveal">
+          <div class="estrelas">
+            <i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i>
+          </div>
+          <p>“Vale muito mais do que custa.”</p>
+          <span>— Juliana R.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ofertas (pricing) + âncora comprar -->
+  <section class="ofertas" id="ofertas">
+    <div class="container">
+      <h2 class="section-title reveal">Escolha a melhor opção para você</h2>
+      <div class="ofertas-grid">
+        <!-- Oferta 1 - especial -->
+        <div class="oferta-card reveal" id="comprar">
+          <h3>Oferta Especial</h3>
+          <div class="preco-wrapper">
+            <span class="preco-atual">R$ 19,90</span>
+          </div>
+          <p style="font-size: 1rem; color: #446A5C;">Produto digital com acesso imediato</p>
+          <a href="https://go.invictuspay.app.br/mhy0zxdku5" class="btn-oferta" target="_blank" rel="noopener">COMPRAR AGORA</a>
+        </div>
+        <!-- Oferta 2 - completa (destaque) -->
+        <div class="oferta-card destaque reveal">
+          <h3>Oferta Completa</h3>
+          <div class="preco-wrapper">
+            <span class="preco-antigo">R$ 79,90</span>
+            <span class="preco-atual">R$ 49,90</span>
+          </div>
+          <p style="font-size: 1rem; color: #1F7A5C; font-weight: 600;">Conteúdo completo + material bônus</p>
+          <a href="https://go.invictuspay.app.br/5mhoo" class="btn-oferta" target="_blank" rel="noopener">QUERO A VERSÃO COMPLETA</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Confiança -->
+  <section class="confianca" id="confianca">
+    <div class="container">
+      <div class="confianca-flex">
+        <div class="confianca-item reveal"><i data-feather="lock"></i> Pagamento seguro via Pix</div>
+        <div class="confianca-item reveal"><i data-feather="file-text"></i> Produto 100% digital</div>
+        <div class="confianca-item reveal"><i data-feather="zap"></i> Acesso imediato após pagamento</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      © 2026 DESINCHA FAST – Todos os direitos reservados
+    </div>
+  </footer>
+
+  <!-- scripts -->
+  <script>
+    (function() {
+      // feather icons replace
+      feather.replace();
+
+      // menu mobile toggle
+      const menuToggle = document.getElementById('menuToggle');
+      const mobileMenu = document.getElementById('mobileMenu');
+      if (menuToggle) {
+        menuToggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          mobileMenu.classList.toggle('show');
+          // alternar ícone entre menu e x (opcional)
+          const icon = menuToggle.querySelector('i');
+          if (mobileMenu.classList.contains('show')) {
+            icon.setAttribute('data-feather', 'x');
+          } else {
+            icon.setAttribute('data-feather', 'menu');
+          }
+          feather.replace(); // re-aplica
+        });
+      }
+
+      // fechar menu mobile ao clicar em link
+      document.querySelectorAll('.mobile-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.remove('show');
+          const icon = menuToggle.querySelector('i');
+          icon.setAttribute('data-feather', 'menu');
+          feather.replace();
+        });
+      });
+
+      // Scroll reveal suave + ativar seção na visualização
+      const revealElements = document.querySelectorAll('.reveal');
+      function checkReveal() {
+        for (let el of revealElements) {
+          const rect = el.getBoundingClientRect();
+          const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+          if (rect.top < windowHeight - 60) {
+            el.classList.add('active');
+          }
+        }
+      }
+      window.addEventListener('scroll', checkReveal);
+      window.addEventListener('resize', checkReveal);
+      checkReveal(); // ativa já visíveis
+
+      // navbar shadow ao rolar
+      const navbar = document.getElementById('navbar');
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 10) {
+          navbar.style.boxShadow = '0 4px 20px rgba(0,40,20,0.1)';
+        } else {
+          navbar.style.boxShadow = 'none';
+        }
+      });
+
+      // rolagem suave para links âncora (inclusive botão hero)
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          const href = this.getAttribute('href');
+          if (href === "#" || href === "") return;
+          const target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+
+      // redirecionamento dos botões de compra (âncora "comprar" leva para a seção ofertas)
+      // Mas também tratamos links manuais (já estão nos hrefs).
+      // link comprar do navbar leva a #comprar (dentro da oferta especial)
+    })();
+  </script>
+  <!-- pequeno ajuste para garantir que o #comprar role para a seção (offset) -->
+  <style>
+    /* suaviza ancora com navbar fixa */
+    html {
+      scroll-padding-top: 80px;
+      scroll-behavior: smooth;
+    }
+    /* brilho verde consistente nos botões principais */
+    .btn-principal, .btn-oferta {
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+  </style>
+</body>
 </html>
